@@ -1,0 +1,362 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: API Documentation
+  description: API documentation for the application
+servers:
+  - url: https://cultivitea-hokwvb2y5q-et.a.run.app
+    description: Server
+
+paths:
+  /signup:
+    post:
+      summary: Sign up a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                email:
+                  type: string
+      responses:
+        200:
+          description: User signed up successfully
+
+  /signin:
+    post:
+      summary: Sign in an existing user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: User signed in successfully
+
+  /logout:
+    post:
+      summary: Log out the current user
+      responses:
+        200:
+          description: User logged out successfully
+
+  /predict:
+    post:
+      summary: Predict using an uploaded image
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: Prediction result
+
+  /predict/histories:
+    get:
+      summary: Get prediction histories
+      security:
+        - cookieAuth: []
+      responses:
+        200:
+          description: List of prediction histories
+
+  /discussions:
+    post:
+      summary: Create a new discussion
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+      responses:
+        200:
+          description: Discussion created successfully
+
+    get:
+      summary: Get all discussions
+      responses:
+        200:
+          description: List of all discussions
+
+  /discussions/{discussionId}:
+    get:
+      summary: Get a specific discussion
+      parameters:
+        - name: discussionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Discussion details
+    delete:
+      summary: Delete a specific discussion
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: discussionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Discussion deleted successfully
+    
+  /discussions/edit/{discussionId}:
+    put:
+      summary: Update a specific discussion
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: discussionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+      responses:
+        200:
+          description: Discussion updated successfully
+
+  /discussions/{discussionId}/comments:
+    post:
+      summary: Create a new comment in a discussion
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: discussionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+      responses:
+        200:
+          description: Comment created successfully
+
+    get:
+      summary: Get comments of a specific discussion
+      parameters:
+        - name: discussionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: List of comments
+
+  /discussions/{discussionId}/comments/{commentId}:
+    delete:
+      summary: Delete a specific comment
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: discussionId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: commentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Comment deleted successfully
+
+  /profile/{uid}:
+    get:
+      summary: Get a user profile by ID
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: User profile
+    delete:
+      summary: Delete a user profile by ID
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Profile deleted successfully
+    
+  /profile/edit/{uid}:
+    put:
+      summary: Update a user profile by ID
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                name:
+                  type: string
+                phoneNumber:
+                  type: string
+                dateOfBirth:
+                  type: string
+      responses:
+        200:
+          description: Profile updated successfully
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: access_token
+
+  schemas:
+    profiles:
+      type: object
+      properties:
+        username:
+          type: string
+        uid:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        dateOfBirth:
+          type: string
+        imageUrl:
+          type: string
+      required:
+        - username
+        - uid
+        - email
+
+    discussions:
+      type: object
+      properties:
+        discussionId:
+          type: string
+        creatorUid:
+          type: string
+        creator:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - discussionId
+        - creatorUid
+        - creator
+        - title
+        - content
+        - createdAt
+
+    comments:
+      type: object
+      properties:
+        commentId:
+          type: string
+        creatorUid:
+          type: string
+        creator:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - commentId
+        - creatorUid
+        - creator
+        - content
+        - createdAt
+
+    predictions:
+      type: object
+      properties:
+        teaPlantId:
+          type: string
+        result:
+          type: string
+        suggestion:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - teaPlantId
+        - result
+        - suggestion
+        - createdAt
