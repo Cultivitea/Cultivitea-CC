@@ -1,4 +1,4 @@
-# REST API / Backend Project
+# Cultivitea-CC
 
 ## Table of Contents
 - [Introduction](#introduction)
