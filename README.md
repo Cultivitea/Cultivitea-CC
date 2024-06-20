@@ -51,7 +51,7 @@ This is the REST API used by the cultivitea application. This API allows users t
 ### Usage
 1. Start the server
     ```bash
-    npm run start: dev
+    npm run start:dev
     ```
     Or
     ```bash
